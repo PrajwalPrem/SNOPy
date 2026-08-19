@@ -1,0 +1,9 @@
+numpy
+scipy
+pandas
+astropy
+sympy
+matplotlib
+emcee>=3.1
+corner
+tqdm

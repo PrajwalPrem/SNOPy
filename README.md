@@ -1,12 +1,12 @@
-# SNOPy
+# SNOPE
 
-**S**pherical-symmetric spacetime **N**umerical **O**rbit and **P**arameter inference in **Py**thon
+**S**pherical-symmetric spacetime **N**umerical **O**rbit and **P**arameter **E**stimation.
 
 <p align="center">
-  <img src="logo_SNOPy.png" width="700">
+  <img src="logo_SNOPE.png" width="700">
 </p>
 
-SNOPy is a simple Python framework for modelling stellar orbits in a static, spherically symmetric spacetime of choice and performing Bayesian parameter estimation using Markov Chain Monte Carlo (MCMC).
+SNOPE is a simple Python framework for modelling stellar orbits in a static, spherically symmetric spacetime of choice and performing Bayesian parameter estimation using Markov Chain Monte Carlo (MCMC).
 
 It provides a common geodesic integration and inference pipeline that is independent of the underlying gravity model. New spacetime metrics can be incorporated easily by specifying only the metric components ($tt$ and $rr$) and the associated model parameters. 
 The numerical integration, likelihood evaluation, optimization, sampling, and plotting are handled automatically.
@@ -25,8 +25,8 @@ Although we currently use the S2 star as the reference dataset, the framework is
 Clone the repository
 
 ```bash
-git clone https://github.com/PrajwalPrem/SNOPy.git
-cd SNOPy
+git clone https://github.com/PrajwalPrem/SNOPE.git
+cd SNOPE
 pip install -r requirements.txt
 ```
 Install the required packages
@@ -41,7 +41,7 @@ Jupyter notebooks require no additional setup.
 ## Structure
 
 ```
-snopy/
+snope/
 ├── constants.py          Physical constants
 ├── data.py               S2 astrometry/RV data loader
 ├── orbit_model.py        (Metric-independent) Physics engine that includes the Geodesic equation (Christoffel symbols etc)
@@ -80,7 +80,7 @@ If this dataset is used in scientific work, please cite both the original public
 Running an MCMC analysis for the Schwarzschild–de Sitter metric requires only a few lines of code.
 
 ```python
-from snopy.metrics.sds import main
+from snope.metrics.sds import main
 
 sampler, flat_samples, best_fit = main(
     data_path_pos="data/tab_gillessen_pos.csv",
@@ -101,20 +101,20 @@ The orbit modelling already takes into account - we are numerically evaluating t
 To fit another spacetime, simply import the corresponding metric module.
 
 ```python
-from snopy.metrics.brans_dicke import main
+from snope.metrics.brans_dicke import main
 ```
 
 or
 
 ```python
-from snopy.metrics.quadratic_gravity import main
+from snope.metrics.quadratic_gravity import main
 ```
 No further changes to the analysis pipeline are required.
 
 Pipeline parameters may be overridden directly.
 
 ```python
-from snopy.priors import PriorMode
+from snope.priors import PriorMode
 
 sampler, flat_samples, best_fit = main(
     prior_mode=PriorMode.FLAT,
@@ -169,7 +169,7 @@ Adding a new gravity model requires only a single metric file. The new module mu
 - parameter priors,
 - horizon location (if required).
 
-Here is an example to create `snopy/metrics/my_metric.py`:
+Here is an example to create `snope/metrics/my_metric.py`:
 
 ```python
 from . import MetricSpec
@@ -221,7 +221,7 @@ main = make_main(metric, param_priors, default_prior_mode=PriorMode.MIXED,
                   n_walkers=40, n_steps=30000, burn_in=3000, n_points=1000)
 ```
 
-With this, `from snopy.metrics.my_metric import main` now works just
+With this, `from snope.metrics.my_metric import main` now works just
 like the other built-in examples. 
 
 ## Prior modes
@@ -240,7 +240,7 @@ The active prior is selected globally.
 | `PriorMode.GAUSSIAN`         | Gaussian | Gaussian |
 
 ```python
-from snopy.priors import PriorMode
+from snope.priors import PriorMode
 main(prior_mode=PriorMode.FLAT)
 main(prior_mode=PriorMode.MIXED)      # default
 main(prior_mode=PriorMode.GAUSSIAN)
@@ -273,9 +273,9 @@ Each likelihood evaluation integrates the geodesic equations using SciPy's **DOP
 
 # Citation
 
-If you use **SNOPy** in published research, please cite the original observational dataset used in your analysis (e.g. Gillessen et al. 2017 for the S2 data):
+If you use **SNOPE** in published research, please cite the original observational dataset used in your analysis (e.g. Gillessen et al. 2017 for the S2 data):
 
-Also consider citing the methodological paper describing the SNOPy framework:
+Also consider citing the methodological paper describing the SNOPE framework:
 > Hassan Puttasiddappa et.al. (2026),
 > *Bounds on Λ at the Galactic Center*,
 > xxxxx.
