@@ -54,9 +54,7 @@ snopy/
 │   ├── __init__.py
 │   ├── schwarzschild.py
 │   ├── sds.py
-│   ├── quadratic_gravity.py
-│   └── brans_dicke.py
-│
+│   
 ├── notebooks/            Example notebooks
 ├── data/                 Observational data
 └── tests/                Unit tests
