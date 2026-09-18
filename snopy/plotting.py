@@ -1,6 +1,3 @@
-"""Diagnostics shared by every metric: chi^2/AIC/BIC summary, corner plot,
-walker-trace (convergence) plot, the 4-panel orbit/RV fit plot, and a
-quick effective-potential check."""
 import numpy as np
 import matplotlib.pyplot as plt
 import corner
@@ -150,14 +147,7 @@ def orbit_plot(model, best_fit, title, out_prefix="snope", n_points=20000):
 
 
 def effective_potential_plot(preview, title, out_prefix=None, show=True):
-    """Plot V_eff(r) against E^2 from `S2OrbitModel.preview_effective_potential`.
-
-    Two crossings of V_eff and the E^2 line -- at r_p and r_a -- mean the
-    chosen metric and parameters give a bound orbit. If the curves don't
-    cross twice inside the plotted range, the orbit isn't bound as
-    configured, and the full integrator will fail or return nonsense for
-    these parameters.
-    """
+    
     r, V, E2 = preview['r'], preview['V_eff'], preview['E2']
 
     fig, ax = plt.subplots(figsize=(8, 5))
