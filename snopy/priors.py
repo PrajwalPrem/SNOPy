@@ -1,22 +1,8 @@
-"""Priors: flat, mixed (flat + Gaussian), and all-Gaussian modes.
+# We already have 3 kinds of Priors set up: flat, mixed (flat + Gaussian), and all-Gaussian modes
+# PriorMode.FLAT: every parameter uses its flat bounds
+# PriorMode.MIXED: parameters in gaussian_params (by default t_peri, x0, y0, vx0, vy0, vz0) use their Gaussian (mean, std); everything else is flat
+# PriorMode.GAUSSIAN: every parameter uses its Gaussian (mean, std)
 
-Each parameter is described once, in the metric's config file, by a
-`ParamPrior` that carries both a flat range and a Gaussian (mean, std).
-Which one is actually used for a given parameter is decided entirely by
-the `PriorMode` passed to `PriorSet` / `main()`:
-
-    PriorMode.FLAT     - every parameter uses its flat `bounds`
-    PriorMode.MIXED     - parameters in `gaussian_params` (by default
-                          t_peri, x0, y0, vx0, vy0, vz0 -- the offset/
-                          reference-epoch nuisance parameters) use their
-                          Gaussian (mean, std); everything else is flat
-    PriorMode.GAUSSIAN  - every parameter uses its Gaussian (mean, std)
-
-The hard bounds handed to emcee/L-BFGS-B are always the flat `bounds`
-when a parameter is flat, or mean +/- N_SIGMA_BOUND*std when it is
-Gaussian (this keeps a technically-infinite Gaussian support finite
-without ever letting the sampler get close to clipping it).
-"""
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterable, Optional, Tuple
@@ -36,17 +22,7 @@ class PriorMode(str, Enum):
 
 @dataclass
 class ParamPrior:
-    """One parameter's prior, in both flavors at once.
-
-    bounds:   (lo, hi) flat / uniform range
-    gaussian: (mean, std), or None if this parameter can never be
-              sampled with a Gaussian prior
-    init:     starting value for the optimizer; defaults to the bounds
-              midpoint (flat) or the Gaussian mean
-    init_std: spread used to scatter the initial walker ball around the
-              optimizer's best point; defaults to (hi-lo)/6 (flat) or
-              std (Gaussian)
-    """
+    
     bounds: Tuple[float, float]
     gaussian: Optional[Tuple[float, float]] = None
     init: Optional[float] = None
@@ -57,9 +33,6 @@ class ParamPrior:
 
 
 class PriorSet:
-    """Resolves {name: ParamPrior} + a PriorMode into the concrete
-    per-parameter (use_gaussian, bounds, gaussian, init, init_std)
-    tables consumed by S2OrbitMCMC."""
 
     def __init__(self, param_priors: Dict[str, ParamPrior], mode: PriorMode = PriorMode.MIXED,
                  gaussian_params: Iterable[str] = DEFAULT_GAUSSIAN_PARAMS):
