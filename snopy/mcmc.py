@@ -1,6 +1,5 @@
-"""The MCMC fitter. Works with any S2OrbitModel + PriorSet -- it doesn't
-know or care which metric it's fitting, or how many extra parameters
-that metric has."""
+# This is a generic MCMC setup. Works with any S2OrbitModel + PriorSet and it doesn't know or care which metric it's fitting, or how many extra parameters that metric has.
+
 import sys
 import time
 
