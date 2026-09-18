@@ -1,20 +1,6 @@
-"""Schwarzschild-de Sitter (SdS) metric plug-in.
+# Schwarzschild-de Sitter (arXiv: 2606.13356):  f(r) = 1 - 2M/r - (Lambda_geo * r^2)/3        g_tt = -f(r),  g_rr = 1/f(r)
+# The new parameter is Lambda, or log_10_(Lambda)
 
-*** THIS IS THE FILE TO EDIT to change the SdS setup. *** Everything
-below -- the metric functions and the parameter priors -- is
-self-contained; nothing elsewhere in the package needs to change.
-
-    f(r) = 1 - 2M/r - (Lambda_geo * r^2)/3        g_tt = -f(r),  g_rr = 1/f(r)
-
-M is fixed at the Schwarzschild convention M = 0.5 (r is measured in
-units of R_s = 2 G M_bh / c^2, so the horizon sits at r=1). The single
-extra parameter is the cosmological constant Lambda, sampled as
-log10_lambda (physical units of m^-2, since Lambda's natural scale spans
-many orders of magnitude). Lambda_geo = Lambda * R_s^2 converts it into
-the dimensionless units used by the integrator -- so, unlike the other
-two metrics here, SdS's g_tt/g_rr genuinely depend on R_s (i.e. on
-M_bh) as well as on log10_lambda; that's why gtt/grr below take R_s.
-"""
 from . import MetricSpec
 from ..priors import ParamPrior
 from ..pipeline import make_main
@@ -59,14 +45,7 @@ metric = MetricSpec(
     description="Schwarzschild-de Sitter: f(r) = 1 - 2M/r - Lambda*r^2/3",
 )
 
-# ---------------------------------------------------------------------
-# PARAMETER PRIORS -- edit bounds / (mean, std) here to change the fit.
-# Every parameter carries BOTH a flat range and a Gaussian description;
-# `prior_mode` (passed to main()) decides which is actually used:
-#   PriorMode.FLAT      - every parameter flat
-#   PriorMode.MIXED      - t_peri/offsets Gaussian, rest flat  (default)
-#   PriorMode.GAUSSIAN   - every parameter Gaussian
-# ---------------------------------------------------------------------
+# Priors 
 param_priors = {
     'M_bh':     ParamPrior(bounds=(3.5e6, 5.0e6),     gaussian=(4.2e6, 0.3e6)),
     'distance': ParamPrior(bounds=(7.2, 9.2),          gaussian=(8.2, 0.3)),
