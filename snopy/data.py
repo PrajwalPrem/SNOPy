@@ -1,12 +1,8 @@
-"""Load S2's astrometry (RA/Dec offsets) and radial-velocity data.
+# Load S2's astrometry (RA/Dec) and radial-velocity data. We have 2 csv files 
+# pos_file:  t[yr], alpha[mas], alpha_err[mas], delta[mas], delta_err[mas]
+# rv_file:   t[yr], v_los[km/s], vlos_err[km/s]
 
-Both files are plain, headerless CSVs:
 
-    pos_file:  t[yr], alpha[mas], alpha_err[mas], delta[mas], delta_err[mas]
-    rv_file:   t[yr], v_los[km/s], vlos_err[km/s]
-
-(the public Gillessen et al. astrometry/RV tables for S2 are one example.)
-"""
 import pandas as pd
 
 
