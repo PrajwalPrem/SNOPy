@@ -1,16 +1,11 @@
-"""
-SNOPE -- Spherical-symmetric spacetime Numerical Orbit and Parameter Estimation.
+# SNOPy: Spherical-symmetric spacetime Numerical Orbit and Parameter inference in Python
 
-One integrator, one MCMC engine, one plotting module, shared across every
-spacetime you want to test against the S2 star's orbit around Sgr A*.
-Each metric (Schwarzschild-de Sitter, quadratic gravity, Brans-Dicke, or
-whatever you add next) is just a small file under `snope.metrics` that
-defines g_tt(r), g_rr(r), the new-physics parameter(s), and their priors.
+# We have a single integrator, MCMC engine and plotting module that is used across any spherical symmetric spacetime you want to test using the S2 star's orbit.
+# Each metric is just a small file under `snope.metrics` that defines g_tt(r), g_rr(r), the new-physics parameter(s), and their priors. This has to be defined. 
+# We provide examples of Schwarzschild and Schwarzschild de Sitter (used in arXiv: 2606.13356)
+# For example,
 
-    from snope.metrics.sds import main
-    sampler, flat_samples, best_fit = main()
-
-See the README for the full guide.
-"""
+# from snope.metrics.sds import main
+# sampler, flat_samples, best_fit = main()
 
 __version__ = "0.1.0"
