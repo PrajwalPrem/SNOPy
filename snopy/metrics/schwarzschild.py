@@ -1,20 +1,5 @@
-"""Schwarzschild metric plug-in -- pure GR, no new-physics parameter.
+# Schwarzschild example with no new-physics parameter: g_tt(r) = -(1 - 2M/r)      g_rr(r) = 1 / (1 - 2M/r)
 
-*** THIS IS THE FILE TO EDIT to change the Schwarzschild setup. ***
-Everything below -- the metric functions and the parameter priors -- is
-self-contained; nothing elsewhere in the package needs to change.
-
-    g_tt(r) = -(1 - 2M/r)      g_rr(r) = 1 / (1 - 2M/r)
-
-M is fixed at the Schwarzschild convention M = 0.5 (r is measured in
-units of R_s = 2 G M_bh / c^2, so the horizon sits at r=1). This is the
-baseline GR case: no extra parameter, so `extra_param_names` is empty
-and `param_priors` only has the usual 13 orbital/offset parameters.
-
-Useful as a sanity check -- fit this first and confirm you recover the
-standard S2/Sgr A* orbital elements (and the expected Schwarzschild
-precession) before trying a modified-gravity metric on the same data.
-"""
 from . import MetricSpec
 from ..priors import ParamPrior
 from ..pipeline import make_main
@@ -50,12 +35,8 @@ metric = MetricSpec(
     description="Schwarzschild: g_tt = -(1-2M/r), g_rr = 1/(1-2M/r), pure GR",
 )
 
-# ---------------------------------------------------------------------
-# PARAMETER PRIORS -- edit bounds / (mean, std) here to change the fit.
-# No new-physics parameter for this metric, so just the standard 13.
-# `prior_mode` (passed to main()) decides flat vs mixed vs all-Gaussian,
-# exactly as in the other metric files.
-# ---------------------------------------------------------------------
+# Priors: prior_mode (passed to main()) decides flat vs mixed vs all-Gaussian
+
 param_priors = {
     'M_bh':     ParamPrior(bounds=(3.7e6, 4.9e6),     gaussian=(4.3e6, 0.2e6)),
     'distance': ParamPrior(bounds=(5.33, 11.33),       gaussian=(8.33, 0.5)),
