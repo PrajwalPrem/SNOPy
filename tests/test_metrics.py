@@ -1,12 +1,3 @@
-"""Lightweight sanity checks -- not a full numerical validation suite, but
-enough to catch import errors, interface mismatches, or broken metric
-files. Run with: `pytest tests/` (needs synthetic or real data files;
-see conftest-style fixture below, adjust paths as needed).
-
-These tests are deliberately cheap: small n_points, no MCMC. They check
-that every metric integrates a closed orbit and returns finite,
-physically sane observables -- they do NOT check astrophysical accuracy.
-"""
 import os
 import numpy as np
 import pandas as pd
@@ -57,7 +48,7 @@ def test_metric_integrates_and_returns_finite_observables(synthetic_data, metric
 
     vel = model.compute_observables(model.data['t_rv'])
     assert np.all(np.isfinite(vel['rv']))
-    # S2 never exceeds ~10,000 km/s even at closest periastron passages.
+    # S2 never exceeds 10,000 km/s even at closest periastron passages.
     assert np.max(np.abs(vel['rv'])) < 15000
 
 
