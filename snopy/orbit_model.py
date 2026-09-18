@@ -1,14 +1,11 @@
-"""The relativistic S2 orbit model -- one engine, any metric.
+# A generic, relativistic S2 orbit model for any static spherically (equatorial) symmetric metric - ds^2 = g_tt(r) dt^2 + g_rr(r) dr^2 + r^2 dphi^2
+# It is described by a MetricSpec (see snope/metrics/__init__.py)
+# Only the metric functions change (between Schwarzschild-de Sitter and Schwarzschild for example)
+# Geodesic integration, the Roemer delay, relativistic Doppler + gravitational redshift, and sky projection are the same for all of them. 
+# Every metric gets the same integrator (DOP853, rtol=atol=1e-12).
 
-Works for any diagonal, static, equatorial metric
-ds^2 = g_tt(r) dt^2 + g_rr(r) dr^2 + r^2 dphi^2, described by a
-`MetricSpec` (see snope/metrics/__init__.py). Only the metric functions
-change between Schwarzschild-de Sitter, quadratic gravity, Brans-Dicke,
-and so on -- geodesic integration, the Roemer delay, relativistic
-Doppler + gravitational redshift, and sky projection are the same for
-all of them, so they live here exactly once. Every metric gets the same
-high-fidelity integrator (DOP853, rtol=atol=1e-12), with no shortcuts.
-"""
+
+
 import numpy as np
 from scipy.integrate import solve_ivp
 from scipy.optimize import root
@@ -23,7 +20,6 @@ STANDARD_PARAM_NAMES = ('M_bh', 'distance', 'a', 'e', 'i', 'omega', 'Omega',
 
 
 class S2OrbitModel:
-    """Relativistic S2 orbit model parametrized by a pluggable `MetricSpec`."""
 
     def __init__(self, metric, data_path_pos="tab_gillessen_pos.csv",
                  data_path_rv="tab_gillessen_vr.csv", verbose=True):
@@ -53,14 +49,11 @@ class S2OrbitModel:
     def from_geometric(self, value):
         return value * self.R_s
 
-    def set_parameters(self, M_bh=4.1e6, distance=8.1, a=125.0, e=0.884, i=134.18,
+    def set_parameters(self, M_bh=4.1e6, distance=8.1, a=125.0, e=0.884, i=134.18,               # a is semi-major axis in milliarcseconds
                         omega=66.1, Omega=228.07, t_peri=2002.32,
                         x0=0.0, y0=0.0, vx0=0.0, vy0=0.0, vz0=0.0,
                         n_points=1000, verbose=None, **extra_params):
-        """`a` is the semi-major axis in milliarcseconds. Any metric-specific
-        parameters (e.g. k=..., log10_lambda=..., omega_bd=...) are passed
-        as keyword arguments and forwarded straight through to the metric
-        functions."""
+        
         if verbose is None:
             verbose = self.verbose
 
@@ -99,10 +92,7 @@ class S2OrbitModel:
 
         self.integrate_orbit(self.t_min, self.t_max, n_points=n_points)
 
-    # ------------------------------------------------------------------
-    # Metric access (thin wrappers so the rest of the class is
-    # completely metric-agnostic)
-    # ------------------------------------------------------------------
+
     def gtt(self, r):
         return self.metric.gtt(r, self.R_s, **self.extra)
 
@@ -116,11 +106,6 @@ class S2OrbitModel:
         return self.metric.dgrr_dr(r, self.R_s, **self.extra)
 
     def V_eff(self, r, L):
-        """Effective potential for the radial turning points:
-        E^2 = V_eff(r) = -g_tt(r) * (1 + L^2/r^2). This only depends on
-        g_tt, not g_rr -- true for any diagonal static metric of this
-        form -- so this (and find_EL below) works unchanged for every
-        metric."""
         return -self.gtt(r) * (1 + L ** 2 / r ** 2)
 
     def find_EL(self, a_geo, e):
@@ -148,14 +133,7 @@ class S2OrbitModel:
 
     def preview_effective_potential(self, M_bh=4.1e6, distance=8.1, a=125.0, e=0.884,
                                      n_r=500, r_range=None, **extra_params):
-        """Sample V_eff(r) and the conserved E^2 without integrating the
-        full orbit -- useful for checking, in a fraction of a second,
-        whether a parameter combination gives a bound orbit (two turning
-        points) before committing to a slow MCMC run.
-
-        Returns a dict with r, V_eff, E2, r_p (periapsis), r_a (apoapsis),
-        and rh (horizon radius), all in geometric units (r in R_s).
-        """
+        
         missing = set(self.metric.extra_param_names) - set(extra_params)
         if missing:
             raise TypeError(f"Missing required metric parameter(s): {sorted(missing)}")
@@ -186,20 +164,7 @@ class S2OrbitModel:
                 'r_p': r_p, 'r_a': r_a, 'rh': self.rh}
 
     def geodesic_derivatives(self, tau, y):
-        """Equatorial geodesic equations for a general diagonal metric
-        ds^2 = g_tt(r) dt^2 + g_rr(r) dr^2 + r^2 dphi^2 -- valid for any
-        g_tt(r), g_rr(r), including cases where g_rr != -1/g_tt. These
-        are the standard Christoffel symbols for a diagonal metric that
-        only depends on r (from Gamma^rho_mu nu = 1/2 g^rho rho (d_mu
-        g_rho nu + d_nu g_rho mu - d_rho g_mu nu)), and they collapse to
-        the textbook Schwarzschild/SdS Christoffels when g_rr = 1/(-g_tt):
-
-            Gamma^t_tr     =  g_tt'/(2 g_tt)
-            Gamma^r_tt     = -g_tt'/(2 g_rr)
-            Gamma^r_rr     =  g_rr'/(2 g_rr)
-            Gamma^r_phiphi = -r/g_rr
-            Gamma^phi_rphi =  1/r
-        """
+        
         t, r, phi, ut, ur, uphi = y
 
         if r <= 1.001 * self.rh:
@@ -367,8 +332,7 @@ class S2OrbitModel:
 
             r_geo = self.to_geometric(r)
             g_tt_r = self.gtt(r_geo)
-            # z_total = (1+z_grav)(1+z_doppler) - 1, metric-agnostic since it
-            # only needs g_tt(r) at the emission point.
+            
             gravitational_factor = 1.0 / np.sqrt(-g_tt_r)
             doppler_factor = np.sqrt(1 - beta2) / (1 - beta_z)
             z_total = gravitational_factor * doppler_factor - 1
