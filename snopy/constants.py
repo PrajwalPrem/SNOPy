@@ -1,4 +1,5 @@
-"""Physical constants and unit conversions, shared by every metric."""
+# Physical constants and unit conversions
+
 from astropy.constants import G, c
 import astropy.units as u
 
